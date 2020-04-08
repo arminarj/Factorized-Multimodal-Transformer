@@ -1,0 +1,1 @@
+{"cuda": 3, "lr": 0.001, "seed": 0, "epoch_num": 1000, "dropout": 0.1, "n_head": 6, "proj_dim_a": 20, "proj_dim_v": 20, "conv_dims": [10, 10], "ff_dim_final": 128, "n_layers": 8, "dim_total_proj": 800, "gru_lr": 0.001}
