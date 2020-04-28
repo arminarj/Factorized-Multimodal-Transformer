@@ -8,7 +8,7 @@ class global_consts():
 
     save_grad = False
 
-    dataset = "mosi1"
+    dataset = "mosi"
     data_path = "/work/chengfem/data/"
     model_path = "../model/"
 
