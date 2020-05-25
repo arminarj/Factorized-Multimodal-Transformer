@@ -44,8 +44,8 @@ class MultimodalDataset(Data.Dataset):
 
 
     def load_data(self):
-        dataset_path = os.path.join(gc.data_path, gc.dataset + '.dt')
-        dataset = pickle.load(open(dataset_path, 'rb'))
+        # dataset_path = os.path.join(gc.data_path, 'mosei_all_labels.data')
+        dataset = torch.load('/content/data/mosei_all_labels.data')
 
         _vision_1 = 'OpenFace_2.0'
         _vision_2 = 'FACET 4.2'
@@ -57,13 +57,13 @@ class MultimodalDataset(Data.Dataset):
         gc.padding_len = dataset['test'][_text].shape[1]
         gc.dim_l = dataset['test'][_text].shape[2]
         gc.dim_a = dataset['test'][_audio_1].shape[2]
-        gc.dim_v = dataset['test'][_vision_1].shape[2]
+        gc.dim_v = dataset['test'][_vision_2].shape[2]
 
         for ds, split_type in [(MultimodalDataset.trainset, 'train'), (MultimodalDataset.validset, 'valid'),
                                (MultimodalDataset.testset, 'test')]:
             ds.text = dataset[split_type][_text].clone().float().cpu().detach()
             ds.audio = dataset[split_type][_audio_1].float()
-            ds.audio[self.audio == -float("Inf")] = 0
+            ds.audio[ds.audio == -float("Inf")] = 0
             ds.audio = ds.audio.clone().cpu().detach()
             ds.vision = dataset[split_type][_vision_1].float().clone().cpu().detach()
             if gc.dataset == 'iemocap':
