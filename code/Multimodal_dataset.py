@@ -11,10 +11,10 @@ from consts import global_consts as gc
 class MultimodalSubdata():
     def __init__(self, name="train"):
         self.name = name
-        self.text = np.empty(0)
-        self.audio = np.empty(0)
-        self.vision = np.empty(0)
-        self.y = np.empty(0)
+        self.text = torch.empty(0)
+        self.audio = torch.empty(0)
+        self.vision = torch.empty(0)
+        self.y = torch.empty(0)
 
 
 class MultimodalDataset(Data.Dataset):
@@ -44,24 +44,32 @@ class MultimodalDataset(Data.Dataset):
 
 
     def load_data(self):
-        dataset_path = os.path.join(gc.data_path, gc.dataset + '_data.pkl')
+        dataset_path = os.path.join(gc.data_path, gc.dataset + '.dt')
         dataset = pickle.load(open(dataset_path, 'rb'))
-        gc.padding_len = dataset['test']['text'].shape[1]
-        gc.dim_l = dataset['test']['text'].shape[2]
-        gc.dim_a = dataset['test']['audio'].shape[2]
-        gc.dim_v = dataset['test']['vision'].shape[2]
+
+        _vision_1 = 'OpenFace_2.0'
+        _vision_2 = 'FACET 4.2'
+        _audio_1 = 'COAVAREP' 
+        _audio_2 = 'OpenSMILE'
+        _text = 'glove_vectors' 
+        _labels = 'All Labels'
+
+        gc.padding_len = dataset['test'][_text].shape[1]
+        gc.dim_l = dataset['test'][_text].shape[2]
+        gc.dim_a = dataset['test'][_audio_1].shape[2]
+        gc.dim_v = dataset['test'][_vision_1].shape[2]
 
         for ds, split_type in [(MultimodalDataset.trainset, 'train'), (MultimodalDataset.validset, 'valid'),
                                (MultimodalDataset.testset, 'test')]:
-            ds.text = torch.tensor(dataset[split_type]['text'].astype(np.float32)).cpu().detach()
-            ds.audio = torch.tensor(dataset[split_type]['audio'].astype(np.float32))
-            ds.audio[ds.audio == -np.inf] = 0
+            ds.text = dataset[split_type][_text].clone().float().cpu().detach()
+            ds.audio = dataset[split_type][_audio_1].float()
+            ds.audio[self.audio == -float("Inf")] = 0
             ds.audio = ds.audio.clone().cpu().detach()
-            ds.vision = torch.tensor(dataset[split_type]['vision'].astype(np.float32)).cpu().detach()
+            ds.vision = dataset[split_type][_vision_1].float().clone().cpu().detach()
             if gc.dataset == 'iemocap':
                 ds.y = torch.tensor(dataset[split_type]['labels'].astype(np.long)).cpu().detach()[:,:,1]
             else:
-                ds.y = torch.tensor(dataset[split_type]['labels'].astype(np.float32)).cpu().detach()
+                ds.y = dataset[split_type][_labels].float().cpu().detach()
 
     def __getitem__(self, index):
         inputLen = len(self.text[index])
