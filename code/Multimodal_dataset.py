@@ -69,7 +69,7 @@ class MultimodalDataset(Data.Dataset):
             if gc.dataset == 'iemocap':
                 ds.y = torch.tensor(dataset[split_type]['labels'].astype(np.long)).cpu().detach()[:,:,1]
             else:
-                ds.y = dataset[split_type][_labels].float().cpu().detach()
+                ds.y = dataset[split_type][_labels][1:].float().cpu().detach()
 
     def __getitem__(self, index):
         inputLen = len(self.text[index])
