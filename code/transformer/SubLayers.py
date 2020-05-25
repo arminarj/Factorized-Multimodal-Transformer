@@ -47,11 +47,11 @@ class MultiHeadAttention(nn.Module):
         self.d_k = d_model
         self.h = heads
 
-        for i in range(heads):
-            setattr(self, 'k_linear%d' % i, nn.Linear(d_model, d_model))
-            setattr(self, 'q_linear%d' % i, nn.Linear(d_model, d_model))
-            setattr(self, 'v_linear%d' % i, nn.Linear(d_model, d_model))
-            setattr(self, 'out%d' % i, nn.Linear(d_model, d_model))
+        # for i in range(heads):
+        setattr(self, 'k_linear', nn.Linear(d_model, d_model))
+        setattr(self, 'q_linear', nn.Linear(d_model, d_model))
+        setattr(self, 'v_linear', nn.Linear(d_model, d_model))
+        setattr(self, 'out', nn.Linear(d_model, d_model))
 
         self.dropout = nn.Dropout(dropout)
 
@@ -59,12 +59,12 @@ class MultiHeadAttention(nn.Module):
         multi_head_scores = []
         for i in range(self.h):
             # perform linear operation and split into N heads
-            k = getattr(self, 'k_linear%d' % i)(k)
-            q = getattr(self, 'q_linear%d' % i)(q)
-            v = getattr(self, 'v_linear%d' % i)(v)
+            k = getattr(self, 'k_linear')(k)
+            q = getattr(self, 'q_linear')(q)
+            v = getattr(self, 'v_linear')(v)
             # calculate attention using function we will define next
             attn_score = attention(q, k, v, self.d_k, mask, self.dropout)
-            multi_head_scores.append(getattr(self, 'out%d' % i)(attn_score))
+            multi_head_scores.append(getattr(self, 'out')(attn_score))
         # concatenate heads and put through final linear layer
         # concat = torch.sum(torch.stack(multi_head_scores, -1), -1)
         # model = self.out(concat)
