@@ -64,6 +64,39 @@ def eval_mosi(split, output_all, label_all):
     print("\t%s exclude zero accuracy: %f" % (split, ex_zero_acc))
     return mae, corr, acc, acc_7, acc_5, f1_mfn, f1_raven, f1_muit, ex_zero_acc
 
+    def eval_mosei_emo(split, output_all, label_all):
+        truth = np.array(label_all)
+        preds = np.array(output_all)
+        mae = np.mean(np.abs(truth - preds))
+        mse = np.sqrt(np.sum(np.square(truth - preds)))
+        # acc = accuracy_score(truth >= 0, preds >= 0)
+        # corr = np.corrcoef(preds, truth)[0][1]
+        # non_zeros = np.array([i for i, e in enumerate(truth) if e != 0])
+
+        # preds_a7 = np.clip(preds, a_min=-3., a_max=3.)
+        # truth_a7 = np.clip(truth, a_min=-3., a_max=3.)
+        # preds_a5 = np.clip(preds, a_min=-2., a_max=2.)
+        # truth_a5 = np.clip(truth, a_min=-2., a_max=2.)
+        # acc_7 = multiclass_acc(preds_a7, truth_a7)
+        # acc_5 = multiclass_acc(preds_a5, truth_a5)
+        # f1_mfn = f1_score(np.round(truth), np.round(preds), average="weighted")
+        # f1_raven = f1_score(truth >= 0, preds >= 0, average="weighted")
+        # f1_muit = f1_score((preds[non_zeros] > 0), (truth[non_zeros] > 0), average='weighted')
+        # binary_truth = (truth[non_zeros] > 0)
+        # binary_preds = (preds[non_zeros] > 0)
+        # ex_zero_acc = accuracy_score(binary_truth, binary_preds)
+        print("\t%s mean error: %f" % (split, mae))
+        print("\t%s mean square error: %f" % (split, mse))
+        print("\t%s correlation coefficient: %f" % (split, corr))
+        # print("\t%s accuracy: %f" % (split, acc))
+        # print("\t%s mult_acc_7: %f" % (split, acc_7))
+        # print("\t%s mult_acc_5: %f" % (split, acc_5))
+        # print("\t%s F1 MFN: %f " % (split, f1_mfn))
+        # print("\t%s F1 RAVEN: %f " % (split, f1_raven))
+        # print("\t%s F1 MuIT: %f " % (split, f1_muit))
+        # print("\t%s exclude zero accuracy: %f" % (split, ex_zero_acc))
+        return mae, corr, mse
+
 
 def eval_iemocap(split, output_all, label_all):
     truths = np.array(label_all)
@@ -113,45 +146,49 @@ def logSummary():
                     print("highest %s %s %s: %f" % (split, cls, metric, gc.best.max_pom_metrics[metric][split][cls]))
                 print("best %s MAE %s: %f" % (split, cls, gc.best.best_pom_mae[split][cls]))
 
-    else:
-        print("best epoch: %d" % gc.best.best_epoch)
-        print("lowest training MAE: %f" % gc.best.min_train_mae)
-        print("lowest testing MAE: %f" % gc.best.min_test_mae)
-        print("lowest validation MAE: %f" % gc.best.min_valid_mae)
-        print("test MAE when validation MAE is the lowest: %f" % gc.best.test_mae_at_valid_min)
+    # elif gc.dataset == 'mosi':
+    #     print("best epoch: %d" % gc.best.best_epoch)
+    #     print("lowest training MAE: %f" % gc.best.min_train_mae)
+    #     print("lowest testing MAE: %f" % gc.best.min_test_mae)
+    #     print("lowest validation MAE: %f" % gc.best.min_valid_mae)
+    #     print("test MAE when validation MAE is the lowest: %f" % gc.best.test_mae_at_valid_min)
 
-        print("highest testing F1 MFN: %f" % gc.best.max_test_f1_mfn)
-        print("highest testing F1 RAVEN: %f" % gc.best.max_test_f1_raven)
-        print("highest testing F1 MuIT: %f" % gc.best.max_test_f1_muit)
+    #     print("highest testing F1 MFN: %f" % gc.best.max_test_f1_mfn)
+    #     print("highest testing F1 RAVEN: %f" % gc.best.max_test_f1_raven)
+    #     print("highest testing F1 MuIT: %f" % gc.best.max_test_f1_muit)
 
-        print("highest validation F1 MFN: %f" % gc.best.max_valid_f1_mfn)
-        print("highest validation F1 RAVEN: %f" % gc.best.max_valid_f1_raven)
-        print("highest validation F1 MuIT: %f" % gc.best.max_valid_f1_muit)
+    #     print("highest validation F1 MFN: %f" % gc.best.max_valid_f1_mfn)
+    #     print("highest validation F1 RAVEN: %f" % gc.best.max_valid_f1_raven)
+    #     print("highest validation F1 MuIT: %f" % gc.best.max_valid_f1_muit)
 
-        print("test F1 MFN when validation F1 is the highest: %f" % gc.best.test_f1_mfn_at_valid_max)
-        print("test F1 RAVEN when validation F1 is the highest: %f" % gc.best.test_f1_raven_at_valid_max)
-        print("test F1 MuIT when validation F1 is the highest: %f" % gc.best.test_f1_muit_at_valid_max)
+    #     print("test F1 MFN when validation F1 is the highest: %f" % gc.best.test_f1_mfn_at_valid_max)
+    #     print("test F1 RAVEN when validation F1 is the highest: %f" % gc.best.test_f1_raven_at_valid_max)
+    #     print("test F1 MuIT when validation F1 is the highest: %f" % gc.best.test_f1_muit_at_valid_max)
 
-        print("highest testing correlation: %f" % gc.best.max_test_cor)
-        print("highest validation correlation: %f" % gc.best.max_valid_cor)
-        print("test correlation when validation correlation is the highest: %f" % gc.best.test_cor_at_valid_max)
+    #     print("highest testing correlation: %f" % gc.best.max_test_cor)
+    #     print("highest validation correlation: %f" % gc.best.max_valid_cor)
+    #     print("test correlation when validation correlation is the highest: %f" % gc.best.test_cor_at_valid_max)
 
-        print("highest testing accuracy: %f" % gc.best.max_test_acc)
-        print("highest validation accuracy: %f" % gc.best.max_valid_acc)
-        print("test accuracy when validation accuracy is the highest: %f" % gc.best.test_acc_at_valid_max)
+    #     print("highest testing accuracy: %f" % gc.best.max_test_acc)
+    #     print("highest validation accuracy: %f" % gc.best.max_valid_acc)
+    #     print("test accuracy when validation accuracy is the highest: %f" % gc.best.test_acc_at_valid_max)
 
-        print("highest testing exclude zero accuracy: %f" % gc.best.max_test_ex_zero_acc)
-        print("highest validation exclude zero accuracy: %f" % gc.best.max_valid_ex_zero_acc)
-        print("test ex-zero accuracy when validation ex-zero accuracy is the highest: %f" %
-              gc.best.test_ex_zero_acc_at_valid_max)
+    #     print("highest testing exclude zero accuracy: %f" % gc.best.max_test_ex_zero_acc)
+    #     print("highest validation exclude zero accuracy: %f" % gc.best.max_valid_ex_zero_acc)
+    #     print("test ex-zero accuracy when validation ex-zero accuracy is the highest: %f" %
+    #           gc.best.test_ex_zero_acc_at_valid_max)
 
-        print("highest testing accuracy 5: %f" % gc.best.max_test_acc_5)
-        print("highest validation accuracy 5: %f" % gc.best.max_valid_acc_5)
-        print("test accuracy 5 when validation accuracy 5 is the highest: %f" % gc.best.test_acc_5_at_valid_max)
+    #     print("highest testing accuracy 5: %f" % gc.best.max_test_acc_5)
+    #     print("highest validation accuracy 5: %f" % gc.best.max_valid_acc_5)
+    #     print("test accuracy 5 when validation accuracy 5 is the highest: %f" % gc.best.test_acc_5_at_valid_max)
 
-        print("highest testing accuracy 7: %f" % gc.best.max_test_acc_7)
-        print("highest validation accuracy 7: %f" % gc.best.max_valid_acc_7)
-        print("test accuracy 7 when validation accuracy 7 is the highest: %f" % gc.best.test_acc_7_at_valid_max)
+    #     print("highest testing accuracy 7: %f" % gc.best.max_test_acc_7)
+    #     print("highest validation accuracy 7: %f" % gc.best.max_valid_acc_7)
+    #     print("test accuracy 7 when validation accuracy 7 is the highest: %f" % gc.best.test_acc_7_at_valid_max)
+    else :
+        print(f"mae : valid {gc.best.max_mae['valid']}, test, {gc.best.max_mae['test_at_valid_max']} ") 
+        print(f"corr : valid {gc.best.max_corr['valid']} , test, {gc.best.max_corr['test_at_valid_max']} ") 
+        print(f"corr : valid {gc.best.max_mse['valid']} , test, {gc.best.max_mse['test_at_valid_max']} ") 
 
 
 def stopTraining(signum, frame):
@@ -295,9 +332,11 @@ def train_model(config_file_name, model_name):
                 test_f1, test_acc = eval_iemocap('test', test_output_all, test_label_all)
             elif gc.dataset == "pom":
                 test_mae, test_metrics = eval_pom('test', test_output_all, test_label_all)
-            else:
+            elif gc.dataset == "mosi":
                 test_mae, test_cor, test_acc, test_acc_7, test_acc_5, test_f1_mfn, test_f1_raven, test_f1_muit, \
                 test_ex_zero_acc = eval_mosi('test', test_output_all, test_label_all)
+            else:
+                test_mae, test_corr, test_mse = eval_mosei_emo('test', test_output_all, test_label_all)
 
             label_all = []
             output_all = []
@@ -343,59 +382,70 @@ def train_model(config_file_name, model_name):
                             gc.best.max_pom_metrics[metric]['test_at_valid_max'][cls] = test_metrics[metric][cls]
                         if test_metrics[metric][cls] > gc.best.max_pom_metrics[metric]['test'][cls]:
                             gc.best.max_pom_metrics[metric]['test'][cls] = test_metrics[metric][cls]
-            else:
-                if len(output_all) > 0:
-                    valid_mae, valid_cor, valid_acc, valid_acc_7, valid_acc_5, valid_f1_mfn, valid_f1_raven, \
-                    valid_f1_muit, valid_ex_zero_acc = eval_mosi('valid', output_all, label_all)
-                    if valid_mae < gc.best.min_valid_mae:
-                        gc.best.min_valid_mae = valid_mae
-                        gc.best.test_mae_at_valid_min = test_mae
-                    if valid_cor > gc.best.max_valid_cor:
-                        gc.best.max_valid_cor = valid_cor
-                        gc.best.test_cor_at_valid_max = test_cor
-                    if valid_acc > gc.best.max_valid_acc:
-                        gc.best.max_valid_acc = valid_acc
-                        gc.best.test_acc_at_valid_max = test_acc
-                    if valid_ex_zero_acc > gc.best.max_valid_ex_zero_acc:
-                        gc.best.max_valid_ex_zero_acc = valid_ex_zero_acc
-                        gc.best.test_ex_zero_acc_at_valid_max = test_ex_zero_acc
-                    if valid_acc_5 > gc.best.max_valid_acc_5:
-                        gc.best.max_valid_acc_5 = valid_acc_5
-                        gc.best.test_acc_5_at_valid_max = test_acc_5
-                    if valid_acc_7 > gc.best.max_valid_acc_7:
-                        gc.best.max_valid_acc_7 = valid_acc_7
-                        gc.best.test_acc_7_at_valid_max = test_acc_7
+            # elif gc.dataset == "mosi":
+            #     if len(output_all) > 0:
+            #         valid_mae, valid_cor, valid_acc, valid_acc_7, valid_acc_5, valid_f1_mfn, valid_f1_raven, \
+            #         valid_f1_muit, valid_ex_zero_acc = eval_mosi('valid', output_all, label_all)
+            #         if valid_mae < gc.best.min_valid_mae:
+            #             gc.best.min_valid_mae = valid_mae
+            #             gc.best.test_mae_at_valid_min = test_mae
+            #         if valid_cor > gc.best.max_valid_cor:
+            #             gc.best.max_valid_cor = valid_cor
+            #             gc.best.test_cor_at_valid_max = test_cor
+            #         if valid_acc > gc.best.max_valid_acc:
+            #             gc.best.max_valid_acc = valid_acc
+            #             gc.best.test_acc_at_valid_max = test_acc
+            #         if valid_ex_zero_acc > gc.best.max_valid_ex_zero_acc:
+            #             gc.best.max_valid_ex_zero_acc = valid_ex_zero_acc
+            #             gc.best.test_ex_zero_acc_at_valid_max = test_ex_zero_acc
+            #         if valid_acc_5 > gc.best.max_valid_acc_5:
+            #             gc.best.max_valid_acc_5 = valid_acc_5
+            #             gc.best.test_acc_5_at_valid_max = test_acc_5
+            #         if valid_acc_7 > gc.best.max_valid_acc_7:
+            #             gc.best.max_valid_acc_7 = valid_acc_7
+            #             gc.best.test_acc_7_at_valid_max = test_acc_7
 
-                    if valid_f1_mfn > gc.best.max_valid_f1_mfn:
-                        gc.best.max_valid_f1_mfn = valid_f1_mfn
-                        gc.best.test_f1_mfn_at_valid_max = test_f1_mfn
-                    if valid_f1_raven > gc.best.max_valid_f1_raven:
-                        gc.best.max_valid_f1_raven = valid_f1_raven
-                        gc.best.test_f1_raven_at_valid_max = test_f1_raven
-                    if valid_f1_muit > gc.best.max_valid_f1_muit:
-                        gc.best.max_valid_f1_muit = valid_f1_muit
-                        gc.best.test_f1_muit_at_valid_max = test_f1_muit
+            #         if valid_f1_mfn > gc.best.max_valid_f1_mfn:
+            #             gc.best.max_valid_f1_mfn = valid_f1_mfn
+            #             gc.best.test_f1_mfn_at_valid_max = test_f1_mfn
+            #         if valid_f1_raven > gc.best.max_valid_f1_raven:
+            #             gc.best.max_valid_f1_raven = valid_f1_raven
+            #             gc.best.test_f1_raven_at_valid_max = test_f1_raven
+            #         if valid_f1_muit > gc.best.max_valid_f1_muit:
+            #             gc.best.max_valid_f1_muit = valid_f1_muit
+            #             gc.best.test_f1_muit_at_valid_max = test_f1_muit
 
-                    if test_mae < gc.best.min_test_mae:
-                        gc.best.min_test_mae = test_mae
-                        gc.best.best_epoch = epoch + 1
-                        best_model = True
-                    if test_cor > gc.best.max_test_cor:
-                        gc.best.max_test_cor = test_cor
-                    if test_acc > gc.best.max_test_acc:
-                        gc.best.max_test_acc = test_acc
-                    if test_ex_zero_acc > gc.best.max_test_ex_zero_acc:
-                        gc.best.max_test_ex_zero_acc = test_ex_zero_acc
-                    if test_acc_5 > gc.best.max_test_acc_5:
-                        gc.best.max_test_acc_5 = test_acc_5
-                    if test_acc_7 > gc.best.max_test_acc_7:
-                        gc.best.max_test_acc_7 = test_acc_7
-                    if test_f1_mfn > gc.best.max_test_f1_mfn:
-                        gc.best.max_test_f1_mfn = test_f1_mfn
-                    if test_f1_raven > gc.best.max_test_f1_raven:
-                        gc.best.max_test_f1_raven = test_f1_raven
-                    if test_f1_muit > gc.best.max_test_f1_muit:
-                        gc.best.max_test_f1_muit = test_f1_muit
+            #         if test_mae < gc.best.min_test_mae:
+            #             gc.best.min_test_mae = test_mae
+            #             gc.best.best_epoch = epoch + 1
+            #             best_model = True
+            #         if test_cor > gc.best.max_test_cor:
+            #             gc.best.max_test_cor = test_cor
+            #         if test_acc > gc.best.max_test_acc:
+            #             gc.best.max_test_acc = test_acc
+            #         if test_ex_zero_acc > gc.best.max_test_ex_zero_acc:
+            #             gc.best.max_test_ex_zero_acc = test_ex_zero_acc
+            #         if test_acc_5 > gc.best.max_test_acc_5:
+            #             gc.best.max_test_acc_5 = test_acc_5
+            #         if test_acc_7 > gc.best.max_test_acc_7:
+            #             gc.best.max_test_acc_7 = test_acc_7
+            #         if test_f1_mfn > gc.best.max_test_f1_mfn:
+            #             gc.best.max_test_f1_mfn = test_f1_mfn
+            #         if test_f1_raven > gc.best.max_test_f1_raven:
+            #             gc.best.max_test_f1_raven = test_f1_raven
+            #         if test_f1_muit > gc.best.max_test_f1_muit:
+            #             gc.best.max_test_f1_muit = test_f1_muit
+            else :
+                valid_mae, valid_corr, valid_mse = eval_mosei_emo('valid', output_all, label_all)
+                if valid_mae > gc.best.max_mae['valid']:
+                    gc.best.max_mae['valid'] = valid_mae
+                    gc.best.max_mae['test_at_valid_max'] = test_mae
+                if valid_corr > gc.best.max_acc['valid']:
+                    gc.best.max_corr['valid'] = valid_corr
+                    gc.best.max_corr['test_at_valid_max'] = test_corr
+                if valid_mse > gc.best.max_mse['valid']:
+                    gc.best.max_mse['valid'] = valid_mse
+                    gc.best.max_mse['test_at_valid_max'] = test_mse
 
         tot_num = 0
         tot_err = 0

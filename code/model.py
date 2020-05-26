@@ -21,10 +21,10 @@ class Net(nn.Module):
             final_out_dim = 2 * len(gc.best.emos)
         elif gc.dataset == 'pom':
             final_out_dim = len(gc.best.pom_cls)
-        elif gc.dataset == 'pom':
+        elif gc.dataset == 'mosei':
             final_out_dim = 6
         else:
-            final_out_dim = 1
+            final_out_dim = 6
         self.finalW = nn.Linear(dim_total_proj, final_out_dim)
         # self.sigmoid = nn.Sigmoid()
 
