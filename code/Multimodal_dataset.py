@@ -65,11 +65,12 @@ class MultimodalDataset(Data.Dataset):
             ds.audio = dataset[split_type][_audio_1].float()
             ds.audio[ds.audio == -float("Inf")] = 0
             ds.audio = ds.audio.clone().cpu().detach()
-            ds.vision = dataset[split_type][_vision_1].float().clone().cpu().detach()
+            ds.vision = dataset[split_type][_vision_2].float().clone().cpu().detach()
             if gc.dataset == 'iemocap':
                 ds.y = torch.tensor(dataset[split_type]['labels'].astype(np.long)).cpu().detach()[:,:,1]
             else:
-                ds.y = dataset[split_type][_labels][1:].float().cpu().detach()
+                ds.y = dataset[split_type][_labels][:, :, 1:].float().cpu().detach()
+                assert ds.y.shape[-1] == 6
 
     def __getitem__(self, index):
         inputLen = len(self.text[index])
